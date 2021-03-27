@@ -1,2 +1,4 @@
 # WhoIsInMyNetwork
-A simple script, to check who is in your Network.
+The script is using fping, so make sure it's on your system. 
+The script works only on linux.
+
