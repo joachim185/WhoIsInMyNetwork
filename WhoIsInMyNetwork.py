@@ -1,6 +1,5 @@
-# To do: Check nslookup error
-# Bughunting
-
+#ToDo: hostfile enfernen
+#(error)Meldungen v fping nicht ausgeben
 import subprocess as sp
 import os
 import time
@@ -30,12 +29,18 @@ def getName():
         txt = txt.replace("\n", "")
 
         try:
-            host = sp.check_output(["nslookup", txt]).decode("utf-8")
-            posA = host.find("=")
-            posB = host.find("Auth")
-            name = txt + " ------> " + host[posA + 2:posB - 3]
-            print(name)
-            output.append(name)
+
+            host = sp.check_output(["arp", txt]).decode("utf-8")
+
+            if "--" in host:
+                pass
+
+            else:
+                posA = host.find("Iface")
+                posB = host.find("ether")
+                name = txt + " ------> " + host[posA + 6:posB - 3]
+                print(name)
+                output.append(name)
 
         except:
             print("An error has occurred! IP= "+txt)
@@ -55,18 +60,18 @@ def fileHandling(k, w):
     if w.upper() == "Y":
         print("Writing the output to 'OUTPUT.txt'. ")
 
-        outPut=str(output).replace("[","")
-        ooutPut = str(outPut).replace("]", "")
-        os.system("echo "+ str(ooutPut) + " > OUTPUT.txt")
+
+        for i in output:
+            os.system("echo '" + i + "' >> OUTPUT.txt")
 
     elif k.upper() == "N":
         pass
 
     else:
         print("Writing the output to 'OUTPUT.txt'. ")
-        outPut = str(output).replace("[", "")
-        ooutPut = str(outPut).replace("]", "")
-        os.system("echo " + str(ooutPut) + " > OUTPUT.txt")
+
+        for i in output:
+            os.system("echo '" + i + "' >> OUTPUT.txt")
 
 
 
