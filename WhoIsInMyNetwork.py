@@ -1,5 +1,6 @@
 #ToDo: hostfile enfernen
 #(error)Meldungen v fping nicht ausgeben
+#Mac-Adresse auch in "output" ausgeben
 import subprocess as sp
 import os
 import time
