@@ -1,90 +1,80 @@
-#ToDo: hostfile enfernen
-#(error)Meldungen v fping nicht ausgeben
-#Mac-Adresse auch in "output" ausgeben
+'''ToDO: Mac Adressen anzeigen lassen
+    Anzahl der Gefundenen Clients anzeigen lassen
+    Variablen besser benennen
+'''
+
+
+
 import subprocess as sp
 import os
 import time
 
 
-def glob():
-    global output
-    output = []
-
-
 def ping():
     try:
-        print("Generating (temporary) hostfile")
-        os.system("fping -g 192.168.8.1 192.168.8.200 | grep alive > host")
+        print("Checking the Network. Please be patient...)
+        f=sp.getoutput(["fping -a -q -g 192.168.8.1 192.168.8.255"])
+        return f
     except:
         print("An error has occurred!!")
 
     os.system("clear")
 
 
-def getName():
-    f = open("host", "r")
+def getName(u):
+    output=[]
+    user=u.split("\n")
 
-    for i in f.readlines():
+    for i in user:
 
-        txt = i.replace(" is alive", "")
-        txt = txt.replace("\n", "")
+        if "duplicate" in i:
+            pass
 
-        try:
+        else:
 
-            host = sp.check_output(["arp", txt]).decode("utf-8")
+            try:
 
-            if "--" in host:
-                pass
+                host = sp.check_output(["arp", i]).decode("utf-8")
 
-            else:
-                posA = host.find("Iface")
-                posB = host.find("ether")
-                name = txt + " ------> " + host[posA + 6:posB - 3]
-                print(name)
-                output.append(name)
+                if "--" in host:
+                    pass
 
-        except:
-            print("An error has occurred! IP= "+txt)
+                else:
+                    posA = host.find("Iface")
+                    posB = host.find("ether")
+                    name = i + " ------> " + host[posA + 6:posB - 3]
+                    print(name)
+                    output.append(name)
 
+            except:
+                print("An error has occurred! IP= "+i)
 
-def fileHandling(k, w):
-    if k.upper() == "Y":
-        print("Keeping the hostfile")
+    return output
 
-    elif k.upper() == "N":
-        print("Deleting the hostfile")
-        os.system("rm host")
-
-    else:
-        print("Can't understand what you want me to do with the hostfile. I'm keeping it.")
+def fileHandling(w,o):
 
     if w.upper() == "Y":
         print("Writing the output to 'OUTPUT.txt'. ")
 
 
-        for i in output:
+        for i in o:
             os.system("echo '" + i + "' >> OUTPUT.txt")
 
-    elif k.upper() == "N":
+    elif w.upper() == "N":
         pass
 
     else:
         print("Writing the output to 'OUTPUT.txt'. ")
 
-        for i in output:
+        for i in o:
             os.system("echo '" + i + "' >> OUTPUT.txt")
 
 
+users=ping()
+o=getName(users)
 
-
-glob()
-ping()
-getName()
-
-keep = input("Do you want to keep the hostfile? (Y/N)")
 write = input("Do you want to write the output into a file? (Y/N)")
-
-fileHandling(keep, write)
+fileHandling(write,o)
 
 print("Goodby!")
 
