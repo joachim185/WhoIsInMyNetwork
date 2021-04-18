@@ -12,7 +12,7 @@ import time
 
 def ping():
     try:
-        print("Checking the Network. Please be patient...)
+        print("Checking the Network. Please be patient...")
         f=sp.getoutput(["fping -a -q -g 192.168.8.1 192.168.8.255"])
         return f
     except:
